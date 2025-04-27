@@ -30,7 +30,7 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME}  
         ATIVIDADE-02.c # Código principal em C
         libs/ssd1306.c # Código do display
-        libs/definir_cores.c
+        libs/definir_cores.c # Código de função que define as cores dos resistores
         )
 
 target_link_libraries(${PROJECT_NAME} 

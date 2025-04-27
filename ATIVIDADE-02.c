@@ -90,10 +90,7 @@ int main()
         R_x = R_conhecido * media / (ADC_MAX - media);
 
         determinar_cores(R_x, cor1, cor2, cor3, cores); // Determina as cores
-
-        sprintf(str_media, "%1.0f", media); // Formata a média como string
-        sprintf(str_resitor, "%1.0f %s", R_x, "$"); // Formata o valor do resistor como string
-
+        
         ssd1306_rect(&ssd, 0,0, 128, 64,true, false);
         ssd1306_draw_string(&ssd, "COR 1:", 7, 2);
         ssd1306_draw_string(&ssd, cor1, 63, 2);
@@ -110,11 +107,8 @@ int main()
         ssd1306_draw_string(&ssd, "RESISTEN", 54, 35);
         ssd1306_draw_string(&ssd, str_resitor, 62, 53);
 
-        printf("Media: %s\n", str_media);
-        printf("R_x: %1.0f (%s %s %s)\n", R_x, cor1, cor2, cor3);
         cores_matriz(); // Atualiza a matriz de LEDs com as cores determinadas
         ssd1306_send_data(&ssd);
-        //cores_matriz(); // Atualiza a matriz de LEDs com as cores determinadas
         sleep_ms(1000);
     }
 }
