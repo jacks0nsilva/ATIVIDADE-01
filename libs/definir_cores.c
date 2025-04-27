@@ -2,6 +2,7 @@
 #include <string.h>
 #include <math.h>
 
+// Função para determinar as cores das três primeiras faixas de um resistor de 4 faixas
 void determinar_cores(float resistencia, char cor1[10], char cor2[10], char cor3[10], faixa_cor_t cores[10]) {
     // Função para determinar as cores das três primeiras faixas de um resistor de 4 faixas
     // com base no valor da resistência fornecido. Os nomes das cores são armazenados nas strings cor1, cor2 e cor3.

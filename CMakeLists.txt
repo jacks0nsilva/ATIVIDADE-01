@@ -26,6 +26,7 @@ pico_sdk_init()
 
 
 
+
 add_executable(${PROJECT_NAME}  
         ATIVIDADE-02.c # Código principal em C
         libs/ssd1306.c # Código do display
@@ -43,4 +44,5 @@ target_link_libraries(${PROJECT_NAME}
 pico_enable_stdio_usb(${PROJECT_NAME} 1)
 pico_enable_stdio_uart(${PROJECT_NAME} 1)
 
+pico_generate_pio_header(ATIVIDADE-02 ${CMAKE_CURRENT_LIST_DIR}/ws2818b.pio)
 pico_add_extra_outputs(${PROJECT_NAME})

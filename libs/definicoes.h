@@ -8,9 +8,13 @@
 #define ADC_PIN 28
 #define MATRIZ_LEDS 7
 
+
 typedef struct {
     char *nome;
     int valor;
+    int red;
+    int green;
+    int blue;
 } faixa_cor_t;
 
 #endif

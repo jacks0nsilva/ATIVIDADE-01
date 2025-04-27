@@ -15,24 +15,23 @@ float R_x = 0.0; // Resistor desconhecido
 float ADC_VREF = 3.31; // Tensão de referência do ADC
 int ADC_MAX = 4095; // Valor máximo do ADC (12 bits)
 ssd1306_t ssd; // Estrutura do display OLED
-
-// Definição das cores e seus valores
-
+char cor1[10], cor2[10], cor3[10]; // Strings para as cores
+bool matriz[25] = {0};
 
 faixa_cor_t cores[] = {
-    {"PRETO", 0},
-    {"MARROM", 1},
-    {"VERMELHO", 2},
-    {"LARANJA", 3},
-    {"AMARELO", 4},
-    {"VERDE", 5},
-    {"AZUL", 6},
-    {"VIOLETA", 7},
-    {"CINZA", 8},
-    {"BRANCO", 9}
+    {"PRETO", 0, 20, 20, 20},       
+    {"MARROM", 1, 150, 75, 25},    
+    {"VERMELHO", 2, 255, 10, 0},    
+    {"LARANJA", 3, 255, 150, 20},   
+    {"AMARELO", 4, 255, 240, 10},   
+    {"VERDE", 5, 0, 150, 20},      
+    {"AZUL", 6, 10, 0, 255},      
+    {"VIOLETA", 7, 140, 0, 160},   
+    {"CINZA", 8, 100, 100, 100},   
+    {"BRANCO", 9, 255, 250, 240}    
 };
 
-
+void cores_matriz(); // Declaração da função cores_matriz
 
 // Trecho para modo BOOTSEL com botão B
 #include "pico/bootrom.h"
@@ -41,7 +40,6 @@ void gpio_irq_handler(uint gpio, uint32_t events)
 {
     reset_usb_boot(0, 0);
 }
-
 
 int main()
 {
@@ -70,13 +68,13 @@ int main()
     ssd1306_fill(&ssd, false); // Limpa o display
     ssd1306_send_data(&ssd);
 
-    np_init(MATRIZ_LEDS);
-    np_clear(); 
-
-    
+    npInit(MATRIZ_LEDS); // Inicializa a matriz de LEDs
+    npClear(); // Limpa a matriz de LEDs
+    npWrite(); // Envia os dados para a matriz de LEDs
+ 
     char str_media[6]; // String para armazenar a média
     char str_resitor[15]; // String para armazenar o valor do resistor desconhecido
-    char cor1[10], cor2[10], cor3[10]; // Strings para as cores
+    
 
     while (true) {
         adc_select_input(2); // Seleciona o canal 2 do ADC (GPIO28)
@@ -114,8 +112,39 @@ int main()
 
         printf("Media: %s\n", str_media);
         printf("R_x: %1.0f (%s %s %s)\n", R_x, cor1, cor2, cor3);
+        cores_matriz(); // Atualiza a matriz de LEDs com as cores determinadas
         ssd1306_send_data(&ssd);
+        //cores_matriz(); // Atualiza a matriz de LEDs com as cores determinadas
         sleep_ms(1000);
     }
 }
 
+
+// Função para determinar as cores com base no valor da resistência
+void cores_matriz() {
+    npClear(); // Limpa tudo antes
+
+    // Define LEDs e cores
+    for (int j = 0; j < 10; j++) {
+        if (strcmp(cores[j].nome, cor1) == 0) {
+            npSetLED(13, cores[j].red, cores[j].green, cores[j].blue);
+            break;
+        }
+    }
+
+    for (int j = 0; j < 10; j++) {
+        if (strcmp(cores[j].nome, cor2) == 0) {
+            npSetLED(12, cores[j].red, cores[j].green, cores[j].blue);
+            break;
+        }
+    }
+
+    for (int j = 0; j < 10; j++) {
+        if (strcmp(cores[j].nome, cor3) == 0) {
+            npSetLED(11, cores[j].red, cores[j].green, cores[j].blue);
+            break;
+        }
+    }
+
+    npWrite(); // Atualiza a matriz de LEDs
+}
