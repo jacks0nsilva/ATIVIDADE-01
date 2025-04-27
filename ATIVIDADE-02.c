@@ -1,5 +1,32 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
+#include "hardware/adc.h"
+#include "hardware/i2c.h"
+#include "libs/ssd1306.h"
+#include "libs/font.h"
+
+#define I2C_PORT i2c1
+#define I2C_SDA 14
+#define I2C_SCL 15
+#define ADRESS 0x3c
+#define ADC_PIN 28
+
+
+
+int R_conhecido = 10000; // Resistor de 10k ohms
+float R_x = 0.0; // Resistor desconhecido
+float ADC_VREF = 3.31; // Tensão de referência do ADC
+int ADC_MAX = 4095; // Valor máximo do ADC (12 bits)
+ssd1306_t ssd; // Estrutura do display OLED
+
+// Trecho para modo BOOTSEL com botão B
+#include "pico/bootrom.h"
+#define BUTTON_B 6
+void gpio_irq_handler(uint gpio, uint32_t events)
+{
+    reset_usb_boot(0, 0);
+}
 
 
 
@@ -7,8 +34,51 @@ int main()
 {
     stdio_init_all();
 
+    gpio_init(BUTTON_B);
+    gpio_set_dir(BUTTON_B, GPIO_IN);
+    gpio_pull_up(BUTTON_B);
+    gpio_set_irq_enabled_with_callback(BUTTON_B, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
+
+    // Inicializa o I2C com 400kHz
+    i2c_init(I2C_PORT, 400 * 1000);
+
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, ADRESS, I2C_PORT);
+    ssd1306_config(&ssd);
+    ssd1306_send_data(&ssd);
+
+    ssd1306_fill(&ssd, false); // Limpa o display
+    ssd1306_send_data(&ssd);
+
+    adc_init();
+    adc_gpio_init(ADC_PIN); // GPIO28 como entrada do ADC
+
+
+    char str_media[5]; // String para armazenar a média
+    char str_resitor[5]; // String para armazenar o valor do resistor desconhecido
+
+
     while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+        adc_select_input(2); // Seleciona o canal 2 do ADC (GPIO28)
+
+        float soma = 0.0f;
+        for (int i = 0; i < 500; i++) {
+            soma += adc_read();
+            sleep_ms(1); // Aguarda 1ms entre as leituras
+        }
+        float media = soma / 500.0f; // Calcula a média das leituras
+
+        // Fórmula simplificada: R_x = R_conhecido * ADC_encontrado /(ADC_MAX - adc_encontrado)
+        R_x = R_conhecido * media / (ADC_MAX - media);
+
+        sprintf(str_media, "%1.0f", media); // Formata a média como string
+        sprintf(str_resitor, "%1.0f", R_x); // Formata o valor do resistor como string
+
+        printf("Media: %s\n", str_media); // Imprime a média no console
+        printf("R_x: %s\n", str_resitor); // Imprime o valor do resistor no console
     }
 }
