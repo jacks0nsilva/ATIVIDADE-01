@@ -58,8 +58,8 @@ int main()
     adc_gpio_init(ADC_PIN); // GPIO28 como entrada do ADC
 
 
-    char str_media[5]; // String para armazenar a média
-    char str_resitor[5]; // String para armazenar o valor do resistor desconhecido
+    char str_media[6]; // String para armazenar a média
+    char str_resitor[9]; // String para armazenar o valor do resistor desconhecido
 
 
     while (true) {
@@ -76,9 +76,25 @@ int main()
         R_x = R_conhecido * media / (ADC_MAX - media);
 
         sprintf(str_media, "%1.0f", media); // Formata a média como string
-        sprintf(str_resitor, "%1.0f", R_x); // Formata o valor do resistor como string
+        sprintf(str_resitor, "%1.0f %s", R_x, "$"); // Formata o valor do resistor como string
+
+        ssd1306_rect(&ssd, 0,0, 128, 64,true, false);
+        ssd1306_draw_string(&ssd, "COR 1: AMARELO", 7, 2);
+        ssd1306_draw_string(&ssd, "COR 2: VERMELHO", 7, 11);
+        ssd1306_draw_string(&ssd, "COR 3: LARANJA", 7, 20);
+        ssd1306_hline(&ssd,1, 127, 29, true); // Desenha uma linha horizontal
+        
+        
+        ssd1306_draw_string(&ssd, "ADC", 7, 35);
+        ssd1306_draw_string(&ssd, str_media, 4, 53);
+        ssd1306_vline(&ssd, 45, 29, 63, true); // Desenha uma linha vertical
+
+        ssd1306_draw_string(&ssd, "RESISTEN", 54, 35);
+        ssd1306_draw_string(&ssd, str_resitor, 62, 53);
 
         printf("Media: %s\n", str_media); // Imprime a média no console
         printf("R_x: %s\n", str_resitor); // Imprime o valor do resistor no console
+        ssd1306_send_data(&ssd); // Envia os dados para o display
+        sleep_ms(1000); // Aguarda 1 segundo
     }
 }

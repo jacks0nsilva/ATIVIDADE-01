@@ -171,8 +171,8 @@ void ssd1306_draw_char(ssd1306_t *ssd, char c, uint8_t x, uint8_t y)
   else if (c >= 'a' && c <= 'z')
   {
     index = (c - 'a' + 38) * 8; // Índices 38-63 para letras minúsculas
-  } else if (c == '%'){
-    index = 64 * 8; // Índice 64 para o símbolo de porcentagem
+  } else if (c == '$'){
+    index = 64 * 8; // Índice 64 para o símbolo $, que desenha o Ω omega no display (foi feito essa mudança pois o Ω  não existe na tabela ASCII)
   }
   
 
