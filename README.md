@@ -1,4 +1,4 @@
-# 📟 Medidor de Resistência com Código de Cores
+# 📟 Ohmímetro inteligente
 
 Um projeto para o Raspberry Pi Pico que mede resistências desconhecidas usando um divisor de tensão e exibe o valor no display OLED, juntamente com as cores correspondentes ao código de resistores.
 
