@@ -33,22 +33,9 @@ faixa_cor_t cores[] = {
 
 void cores_matriz(); // Declaração da função cores_matriz
 
-// Trecho para modo BOOTSEL com botão B
-#include "pico/bootrom.h"
-#define BUTTON_B 6
-void gpio_irq_handler(uint gpio, uint32_t events)
-{
-    reset_usb_boot(0, 0);
-}
-
 int main()
 {
     stdio_init_all();
-
-    gpio_init(BUTTON_B);
-    gpio_set_dir(BUTTON_B, GPIO_IN);
-    gpio_pull_up(BUTTON_B);
-    gpio_set_irq_enabled_with_callback(BUTTON_B, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
 
     // Inicializa o I2C com 400kHz
     i2c_init(I2C_PORT, 400 * 1000);
