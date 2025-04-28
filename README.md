@@ -33,7 +33,7 @@ Um projeto para o Raspberry Pi Pico que mede resistências desconhecidas usando 
 
 2.  **Clone o repositório**
     ```
-    git clone https://github.com/jacks0nsilva/ATIVIDADE-01.git
+    git clone https://github.com/jacks0nsilva/ATIVIDADE-02.git
     ```
 3.  **Instale a extensão do Raspberry Pi Pico no seu VsCode**
 4.  **Usando a extensão do Raspberry Pi Pico, siga os passos:**
